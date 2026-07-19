@@ -491,7 +491,7 @@
       </div>
     </div>
 
-    <!-- Alert Modal -->
+        <!-- Alert Modal -->
     <div id="alertDialog" class="hidden absolute inset-0 z-[100] flex items-center justify-center p-4">
       <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeAlertDialog()"></div>
       <div class="relative bg-white dark:bg-neutralSlate-900 rounded-2xl w-full p-5 text-center shadow-2xl scale-in-anim">
@@ -531,63 +531,9 @@
               <div class="flex justify-between items-center bg-white dark:bg-[#1a1825] p-2 rounded-lg border border-neutralSlate-200 dark:border-white/5"><span class="text-xs font-bold">Auto-Sync</span><input type="checkbox" id="autoSyncToggle" onchange="toggleAutoSync(this.checked)" class="w-4 h-4 accent-brand-500"></div>
               <div><div class="flex justify-between text-[9px] font-bold text-brand-500 uppercase mb-1"><span>App Script URL</span><button onclick="clearCloudUrl()" class="text-danger">Clear</button></div><input type="url" id="gasUrlInput" oninput="updateCloudUrl(this.value)" class="w-full h-10 bg-white dark:bg-[#1a1825] rounded-lg px-3 text-xs border border-neutralSlate-200 dark:border-white/5" placeholder="Paste script URL..."></div>
               <div class="grid grid-cols-2 gap-2"><button onclick="pushStateToCloud()" class="h-10 bg-neutralSlate-100 dark:bg-[#252236] rounded-lg text-[10px] font-bold flex justify-center items-center gap-1.5 border border-neutralSlate-200 dark:border-white/5"><i data-lucide="upload-cloud" class="w-3 h-3 text-brand-500"></i> Push</button><button onclick="pullStateFromCloud()" class="h-10 bg-brand-500 text-white rounded-lg text-[10px] font-bold flex justify-center items-center gap-1.5"><i data-lucide="download-cloud" class="w-3 h-3"></i> Pull</button></div>
-
-      
-            <button onclick="toggleDropdown('gasCodeCollapsible')" class="text-[9px] font-bold text-neutralSlate-500 mt-2 flex justify-center items-center w-full p-2 bg-neutralSlate-100 dark:bg-[#1a1825] rounded-lg">View Script</button                                                                                                                                                                             
+              <button onclick="toggleDropdown('gasCodeCollapsible')" class="text-[9px] font-bold text-neutralSlate-500 mt-2 flex justify-center items-center w-full p-2 bg-neutralSlate-100 dark:bg-[#1a1825] rounded-lg">View Script</button>
               <div id="gasCodeCollapsible" class="hidden mt-2 bg-neutralSlate-900 p-2 rounded-lg"><pre id="appsScriptCodeText" class="text-[7px] text-neutralSlate-300 overflow-x-auto">function doGet(e){var p=PropertiesService.getScriptProperties();return ContentService.createTextOutput(JSON.stringify({status:"success",data:p.getProperty("wb_db")?JSON.parse(p.getProperty("wb_db")):null})).setMimeType(ContentService.MimeType.JSON)}function doPost(e){var req=JSON.parse(e.postData.contents);if(req.action==="sync"){PropertiesService.getScriptProperties().setProperty("wb_db",JSON.stringify(req.data));return ContentService.createTextOutput(JSON.stringify({status:"success"})).setMimeType(ContentService.MimeType.JSON)}}</pre><button onclick="copyAppsScriptCode()" class="mt-2 w-full h-7 bg-brand-500 text-white rounded-[6px] text-[9px] font-bold">Copy</button></div>
-              -->
-                 <!--     <!-- Setup collapsible guidelines 
-              <div class="border border-dashed border-neutralSlate-300 dark:border-neutralSlate-800 rounded-xl p-4 bg-amber-50/50 dark:bg-amber-950/10">
-                <button type="button" onclick="toggleDropdown('gasCodeCollapsible')" class="w-full flex items-center justify-between text-left text-xs font-bold text-neutralSlate-850 dark:text-slate-200">
-                  <span class="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
-                    <i data-lucide="help-circle" class="w-4 h-4"></i> Setup Instructions & App Script Code
-                  </span>
-                  <i data-lucide="chevron-down" class="w-4 h-4"></i>
-                </button>
-                
-                <div id="gasCodeCollapsible" class="hidden mt-3 space-y-2 text-[11px] text-neutralSlate-600 dark:text-neutralSlate-300 leading-relaxed border-t border-neutralSlate-200 dark:border-neutralSlate-800/80 pt-3">
-                  <p class="font-semibold text-rose-505 dark:text-rose-404">🚨 IMPORTANT RULE FOR CORRECT SETUP (Sync failures se bachne ke liye):</p>
-                  <p>Jab aap Apps Script deploy karein, toh yeh do options bilkul sahi select hone chahiye:</p>
-                  <ul class="list-disc list-inside space-y-1 pl-1 font-semibold text-neutralSlate-805 dark:text-white">
-                    <li>Execute as: <span class="text-brand-500 font-bold">Me (your-email@gmail.com)</span></li>
-                    <li>Who has access: <span class="text-emerald-500 font-bold">Anyone</span> (Agar aapne "Anyone with Google Account" select kiya, toh request browser par fail ho jayegi).</li>
-                  </ul>
-                  
-                  <p class="font-bold mt-2 text-neutralSlate-800 dark:text-white">Code for your Apps Script:</p>
-                  <div class="relative bg-neutralSlate-900 text-slate-100 p-2.5 rounded-lg text-[10px] font-mono overflow-x-auto max-h-40">
-                    <pre id="appsScriptCodeText">function doGet(e) {
-  var scriptProp = PropertiesService.getScriptProperties();
-  var data = scriptProp.getProperty("wanderbudget_db");
-  return ContentService.createTextOutput(JSON.stringify({
-    status: "success",
-    data: data ? JSON.parse(data) : null
-  })).setMimeType(ContentService.MimeType.JSON);
-}
-
-function doPost(e) {
-  try {
-    var requestData = JSON.parse(e.postData.contents);
-    if (requestData.action === "sync") {
-      var scriptProp = PropertiesService.getScriptProperties();
-      scriptProp.setProperty("wanderbudget_db", JSON.stringify(requestData.data));
-      return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-  } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}</pre>
-                  </div>
-                  <button type="button" onclick="copyAppsScriptCode()" class="mt-1 px-3 py-1.5 bg-brand-500 text-white rounded-xl text-[10px] font-bold hover:bg-brand-600 transition shadow-sm">Copy Script Code</button>
-                </div>
-              </div>
-
             </div>
-          </div>
-    -->
-        
-           </div>
           </div>
 
           <div class="border border-neutralSlate-200 dark:border-white/5 rounded-xl bg-neutralSlate-50 dark:bg-[#1a1825] overflow-hidden">
@@ -606,32 +552,11 @@ function doPost(e) {
             </div>
           </div>
 
-         <!-- Category 7: App details & developer specifications -->
-          <div class="border border-neutralSlate-200 dark:border-neutralSlate-800 rounded-2xl overflow-hidden bg-neutralSlate-50/50 dark:bg-neutralSlate-955/20">
-            <button onclick="toggleSettingsSection('sectionAbout')" class="w-full px-4 py-3 flex items-center justify-between font-bold text-neutralSlate-800 dark:text-slate-200 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-850/50 transition text-xs sm:text-sm">
-              <span class="flex items-center gap-2">
-                <i data-lucide="info" class="w-4 h-4 text-brand-500"></i> About Application
-              </span>
-              <i data-lucide="chevron-down" id="arrow-sectionAbout" class="w-4 h-4 transition-transform"></i>
-            </button>
-            <div id="sectionAbout" class="hidden p-4 border-t border-neutralSlate-200 dark:border-neutralSlate-800 space-y-2 bg-white dark:bg-neutralSlate-900">
-              <div class="text-center py-2">
-                <h4 class="font-extrabold text-sm text-neutralSlate-850 dark:text-white">TripExpences</h4>
-                <p class="text-[10px] text-neutralSlate-404 mt-0.5">Version 1.7.0 Premium</p>
-                <div class="border-t border-neutralSlate-100 dark:border-neutralSlate-800 my-3"></div>
-                <p class="text-[10px] text-neutralSlate-505 dark:text-neutralSlate-404 leading-relaxed px-4">
-                  A premium minimal trip expense tracker, travel diary, and peer-to-peer udhaar khata book. Designed for seamless offline utility and secure Google Cloud storage sync capabilities.
-                </p>
-                <p class="text-[10px] text-brand-600 dark:text-brand-400 font-bold mt-3">
-                  Crafted with ❤️ by <span class="font-extrabold uppercase">SACHINDHISLE04</span>
-                </p>
-              </div>
+          <div class="border border-neutralSlate-200 dark:border-white/5 rounded-xl bg-neutralSlate-50 dark:bg-[#1a1825] overflow-hidden">
+            <button onclick="toggleSettingsSection('sectionAbout')" class="w-full p-3.5 flex justify-between items-center font-bold text-xs"><span class="flex items-center gap-2"><i data-lucide="info" class="w-4 h-4 text-brand-500"></i> About</span><i data-lucide="chevron-down" id="arrow-sectionAbout" class="w-3.5 h-3.5 transition-transform"></i></button>
+            <div id="sectionAbout" class="hidden p-4 border-t border-neutralSlate-200 dark:border-white/5 text-center dark:bg-[#13111C]">
+              <h4 class="font-extrabold text-xs">TripExpense Premium</h4><p class="text-[9px] text-neutralSlate-400 mt-1">v1.8 | Crafted by SACHINDHISLE04</p>
             </div>
-          </div>
-
-        </div>
-
-            
           </div>
         </div>
       </div>
