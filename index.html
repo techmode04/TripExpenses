@@ -5,14 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <link rel="icon" type="image/png" href="logo1.png">
   
-  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366F1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="TripExpense">
   <link class="apple-touch-icon" href="logo.png">
     
-  <title>TripExpenceTracker — Premium</title>
+  <title>TripExpenseTracker — Premium</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -49,15 +48,12 @@
   <!-- Premium External Libraries -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- jsPDF for multi-page pro reports -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-  <!-- Excel Export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <!-- QR Code -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <!-- OCR Tesseract.js -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -81,7 +77,7 @@
       transform: translateY(-130%) scale(0.85); color: #6366f1; font-weight: 700;
     }
 
-    /* Modals are bound absolute to the container to prevent PC stretching */
+    /* Modals are bound absolute to the container */
     .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 60; }
     .modal-content { position: absolute; bottom: 0; left: 0; right: 0; max-height: 90%; z-index: 61; border-top-left-radius: 32px; border-top-right-radius: 32px; box-shadow: 0 -10px 40px rgba(0,0,0,0.1); }
     
@@ -127,9 +123,9 @@
         <div class="absolute w-16 h-16 rounded-full bg-neutralSlate-900 flex items-center justify-center shadow-lg"><i data-lucide="cloud-lightning" class="w-8 h-8 text-brand-500 animate-pulse"></i></div>
       </div>
       <h2 class="text-2xl font-black mb-2">Syncing Data...</h2>
-      <p class="text-xs sm:text-sm text-neutralSlate-404 max-w-sm text-center px-6 leading-relaxed mb-10">Kripya prateeksha karein, aapka database connect kiya ja raha hai</p>
+      <p class="text-xs sm:text-sm text-neutralSlate-404 max-w-sm text-center px-6 leading-relaxed mb-10">Establishing secure connection...</p>
       <div class="flex items-center gap-2 text-[10px] tracking-widest font-black uppercase text-brand-500">
-        <span class="w-2 h-2 rounded-full bg-brand-500 animate-ping"></span><span id="handshakeStatusText">ESTABLISHING CONNECTION</span>
+        <span class="w-2 h-2 rounded-full bg-brand-500 animate-ping"></span><span id="handshakeStatusText">CONNECTING</span>
       </div>
       <button id="handshakeSkipBtn" onclick="bypassSyncFlow()" class="hidden mt-8 px-6 py-3 bg-neutralSlate-800 text-white text-xs font-bold rounded-2xl">Continue Offline</button>
     </div>
@@ -139,24 +135,18 @@
       <div class="w-full px-6 scale-in-anim">
         <div class="bg-neutralSlate-900 border border-neutralSlate-800 rounded-[32px] p-8 shadow-2xl flex flex-col items-center text-center relative overflow-hidden">
           <div class="absolute inset-0 bg-brand-500/5 blur-3xl rounded-full"></div>
-          <img src="logo.png" alt="TripExpenses Logo" onerror="this.src='https://placehold.co/100x100/6366f1/ffffff?text=TE'" class="w-12 h-12 object-cover rounded-lg bg-white p-0 relative z-10">
+          <img src="logo.png" alt="Logo" class="w-12 h-12 object-contain rounded-lg bg-white p-0 relative z-10" onerror="this.src='https://placehold.co/100x100/6366f1/ffffff?text=TE'">
           <h3 class="text-2xl font-black text-white mt-2 relative z-10">TripExpenses</h3>
           <p class="text-[10px] tracking-wider text-neutralSlate-404 text-center mt-2 mb-4">Default Pin <span class="text-emerald-400 font-bold">0000</span></p>
           <div class="w-full space-y-4 relative z-10">
             <input type="password" id="loginPinInput" maxlength="4" placeholder="••••" class="w-full bg-neutralSlate-950 text-white px-6 h-14 rounded-2xl border border-neutralSlate-800 focus:outline-none focus:border-brand-500 text-center font-black tracking-[0em] text-xl">
             <div id="pinErrorMessage" class="hidden text-danger font-bold text-xs">Incorrect PIN.</div>
             <button onclick="verifySecurityPin()" class="w-full h-14 bg-brand-500 text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-floating active:scale-95 transition-all"><span>Unlock</span><i data-lucide="arrow-right" class="w-5 h-5"></i></button>
-            <!-- Biometric Login Mock -->
-            <button onclick="triggerBiometricAuth()" class="w-full h-14 bg-neutralSlate-800 text-brand-400 rounded-2xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-all"><i data-lucide="fingerprint" class="w-6 h-6"></i></button>
+        
+    <!--     <button onclick="triggerBiometricAuth()" class="w-full h-14 bg-neutralSlate-800 text-brand-400 rounded-2xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-all"><i data-lucide="fingerprint" class="w-6 h-6"></i></button> -->
           </div>
+          <p class="text-[10px] font-medium text-neutralSlate-500 mt-6 relative z-10">Crafted with ❤️ by sachindhisle04</p>
         </div>
-      </div>
-      
-      <!-- ADDED: Crafted by Footer -->
-      <div class="absolute bottom-8 left-0 right-0 text-center scale-in-anim">
-        <p class="text-[11px] text-neutralSlate-500 font-medium tracking-wide">
-          Crafted with ❤️ by <span class="text-brand-400 font-bold">sachindhisle04</span>
-        </p>
       </div>
     </div>
         
@@ -172,7 +162,6 @@
         <div class="flex items-center gap-2">
            <button onclick="openNotificationModal()" class="w-8 h-8 flex items-center justify-center bg-neutralSlate-100 dark:bg-neutralSlate-900 rounded-lg text-neutralSlate-600 dark:text-neutralSlate-300 relative transition-colors"><i data-lucide="bell" class="w-4 h-4"></i><span id="notifBadge" class="hidden absolute top-1.5 right-1.5 w-2 h-2 bg-danger rounded-full border-2 border-white dark:border-neutralSlate-900"></span></button>
            <button onclick="openGlobalSearch()" class="w-8 h-8 flex items-center justify-center bg-neutralSlate-100 dark:bg-neutralSlate-900 rounded-lg text-neutralSlate-600 dark:text-neutralSlate-300 transition-colors"><i data-lucide="search" class="w-4 h-4"></i></button>
-           <!-- Sync Status Indicator in Header -->
            <div id="syncStatusIndicator" class="flex items-center gap-1.5 bg-neutralSlate-100 dark:bg-neutralSlate-900 px-2 py-1 rounded-lg border border-neutralSlate-200 dark:border-neutralSlate-800"></div>
            <button onclick="openSettingsModal()" class="w-8 h-8 flex items-center justify-center bg-neutralSlate-100 dark:bg-neutralSlate-900 rounded-lg text-neutralSlate-600 dark:text-neutralSlate-300 transition-colors"><i data-lucide="settings" class="w-4 h-4"></i></button>
         </div>
@@ -522,7 +511,12 @@
         <div class="w-10 h-1 bg-neutralSlate-200 dark:bg-neutralSlate-800 rounded-full mx-auto mb-5"></div>
         <h3 class="text-lg font-black mb-4">Add Friend</h3>
         <form id="friendForm" onsubmit="saveFriend(event)" class="space-y-3">
-          <input type="text" id="friendModalName" required placeholder="Name" class="w-full h-12 bg-neutralSlate-50 dark:bg-neutralSlate-955 border border-neutralSlate-100 dark:border-neutralSlate-800 rounded-xl px-4 font-bold text-xs"><input type="tel" id="friendModalPhone" placeholder="Phone (Optional)" class="w-full h-12 bg-neutralSlate-50 dark:bg-neutralSlate-955 border border-neutralSlate-100 dark:border-neutralSlate-800 rounded-xl px-4 font-bold text-xs">
+          <input type="hidden" id="friendModalId">
+          <input type="text" id="friendModalName" required placeholder="Name" class="w-full h-12 bg-neutralSlate-50 dark:bg-neutralSlate-955 border border-neutralSlate-100 dark:border-neutralSlate-800 rounded-xl px-4 font-bold text-xs">
+          <input type="tel" id="friendModalPhone" placeholder="Phone (Optional)" class="w-full h-12 bg-neutralSlate-50 dark:bg-neutralSlate-955 border border-neutralSlate-100 dark:border-neutralSlate-800 rounded-xl px-4 font-bold text-xs">
+          <!-- ADDED: Friend UPI -->
+          <input type="text" id="friendModalUpi" placeholder="UPI ID (Optional, for quick settle)" class="w-full h-12 bg-neutralSlate-50 dark:bg-neutralSlate-955 border border-neutralSlate-100 dark:border-neutralSlate-800 rounded-xl px-4 font-bold text-xs">
+          
           <div class="grid grid-cols-4 gap-2 pt-2"><button type="button" onclick="selectFriendColor('bg-indigo-500')" class="friend-color-btn h-10 rounded-xl bg-indigo-500 border-2 border-indigo-400"></button><button type="button" onclick="selectFriendColor('bg-orange-500')" class="friend-color-btn h-10 rounded-xl bg-orange-500 border-2 border-transparent"></button><button type="button" onclick="selectFriendColor('bg-emerald-500')" class="friend-color-btn h-10 rounded-xl bg-emerald-500 border-2 border-transparent"></button><button type="button" onclick="selectFriendColor('bg-rose-500')" class="friend-color-btn h-10 rounded-xl bg-rose-500 border-2 border-transparent"></button></div><input type="hidden" id="friendModalColor" value="bg-indigo-500">
           <button type="submit" class="w-full h-12 bg-brand-500 text-white rounded-xl font-black mt-2">Save</button>
         </form>
@@ -579,6 +573,110 @@
       </div>
     </div>
 
+    <!-- ================= PREMIUM ADDITION: SMART SETTLEMENT MODALS ================= -->
+
+    <!-- Smart Settle Main Modal -->
+    <div id="smartSettleModal" class="hidden absolute inset-0 z-[75] flex flex-col justify-end no-print">
+      <div class="modal-overlay" onclick="closeSmartSettleModal()"></div>
+      <div class="modal-content bg-white dark:bg-neutralSlate-900 p-5 pb-[env(safe-area-inset-bottom)] animate-slide-up">
+        <div class="w-10 h-1 bg-neutralSlate-200 dark:bg-neutralSlate-800 rounded-full mx-auto mb-5"></div>
+        <div class="flex justify-between items-start mb-6">
+           <div>
+             <h3 class="text-lg font-black tracking-tight" id="smartSettleTitle">Settle Up</h3>
+             <p class="text-[10px] font-bold text-neutralSlate-400 mt-1" id="smartSettleDesc">With Friend</p>
+           </div>
+           <button onclick="closeSmartSettleModal()" class="p-1 text-neutralSlate-400"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+
+        <div id="smartSettleWarning" class="hidden mb-4 bg-warning/10 border border-warning/20 p-3 rounded-xl flex items-start gap-2">
+           <i data-lucide="alert-circle" class="w-4 h-4 text-warning shrink-0 mt-0.5"></i>
+           <p class="text-[10px] text-warning font-bold leading-tight" id="smartSettleWarningText">UPI ID missing.</p>
+        </div>
+
+        <!-- Custom Amount Input -->
+        <div class="flex flex-col items-center py-5 bg-neutralSlate-50 dark:bg-neutralSlate-955 rounded-3xl border border-neutralSlate-100 dark:border-neutralSlate-800 mb-5 relative overflow-hidden">
+           <div class="absolute inset-0 bg-brand-500/5 opacity-50"></div>
+           <span class="text-[9px] font-black text-brand-500 uppercase tracking-widest mb-2 relative z-10">Amount to Pay</span>
+           <div class="flex items-center justify-center gap-1 text-brand-500 relative z-10"><span class="text-2xl font-black active-currency mt-1">₹</span><input type="number" step="any" id="smartSettleAmount" oninput="updateSmartSettleProgress()" required class="w-full bg-transparent text-5xl font-black text-center text-neutralSlate-900 dark:text-white focus:outline-none placeholder-neutralSlate-300 dark:placeholder-neutralSlate-800"></div>
+           
+           <!-- Progress Bar -->
+           <div class="w-full px-6 mt-4 relative z-10">
+              <div class="flex justify-between text-[8px] font-black uppercase text-neutralSlate-400 mb-1.5"><span id="smartSettleProgressPaid">Paying: 0</span><span id="smartSettleProgressRem">Remaining: 0</span></div>
+              <div class="h-1.5 w-full bg-neutralSlate-200 dark:bg-neutralSlate-800 rounded-full overflow-hidden">
+                 <div id="smartSettleProgressBar" class="h-full bg-brand-500 rounded-full transition-all duration-300" style="width: 0%"></div>
+              </div>
+           </div>
+        </div>
+
+        <input type="hidden" id="smartSettleFriendId">
+        <input type="hidden" id="smartSettleDirection">
+        <input type="hidden" id="smartSettleMaxAmount">
+        <input type="hidden" id="smartSettleTargetUpi">
+
+        <div class="grid grid-cols-2 gap-3" id="smartSettleButtons">
+           <!-- Dynamically populated based on direction -->
+        </div>
+      </div>
+    </div>
+
+    <!-- UPI QR Modal -->
+    <div id="upiQrModal" class="hidden absolute inset-0 z-[85] flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeUpiQrModal()"></div>
+      <div class="relative bg-white dark:bg-neutralSlate-900 rounded-[32px] w-full max-w-[320px] p-6 text-center shadow-2xl scale-in-anim flex flex-col items-center">
+        <h3 class="text-base font-black mb-1">Scan & Pay</h3>
+        <p class="text-[10px] text-neutralSlate-500 mb-4 font-bold" id="upiQrTargetName">Paying</p>
+        
+        <div class="bg-white p-4 rounded-3xl shadow-soft border border-neutralSlate-100 mb-4 inline-block">
+           <div id="upiQrCodeContainer"></div>
+        </div>
+
+        <div class="bg-neutralSlate-50 dark:bg-neutralSlate-955 w-full p-3 rounded-xl mb-4 border border-neutralSlate-100 dark:border-neutralSlate-800 flex justify-between items-center">
+           <div class="text-left"><p class="text-[8px] font-black uppercase text-neutralSlate-400 tracking-wider">UPI ID</p><p class="text-xs font-bold text-neutralSlate-900 dark:text-white" id="upiQrTargetId">---</p></div>
+           <button onclick="copyToClipboard(document.getElementById('upiQrTargetId').textContent)" class="w-8 h-8 bg-white dark:bg-neutralSlate-900 rounded-lg flex items-center justify-center shadow-sm text-brand-500"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+        </div>
+        
+        <div class="flex gap-2 w-full">
+           <button onclick="closeUpiQrModal()" class="flex-1 h-12 bg-neutralSlate-100 dark:bg-neutralSlate-800 font-bold rounded-xl text-xs">Done</button>
+           <button onclick="recordSettlementPostUPI()" class="flex-1 h-12 bg-success text-white font-black rounded-xl text-xs shadow-floating">Confirm Paid</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settlement Confirmation Flow Modal -->
+    <div id="settleConfirmModal" class="hidden absolute inset-0 z-[80] flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+      <div class="relative bg-white dark:bg-neutralSlate-900 rounded-3xl w-full max-w-[320px] p-6 text-center shadow-2xl scale-in-anim">
+        <div class="w-16 h-16 bg-brand-500/10 text-brand-500 rounded-full flex items-center justify-center mx-auto mb-4"><i data-lucide="check-circle-2" class="w-8 h-8"></i></div>
+        <h3 class="text-lg font-black mb-2">Payment Successful?</h3>
+        <p class="text-xs text-neutralSlate-500 mb-5 font-medium">Did the UPI transaction complete successfully?</p>
+        
+        <div class="mb-5 text-left">
+           <label class="text-[9px] font-black uppercase text-neutralSlate-400 ml-1">Transaction ID (Optional)</label>
+           <input type="text" id="settleConfirmTxnId" placeholder="e.g. 31234567890" class="w-full h-12 bg-neutralSlate-50 dark:bg-neutralSlate-955 border border-neutralSlate-100 dark:border-neutralSlate-800 rounded-xl px-4 font-bold text-xs mt-1 focus:ring-2 focus:ring-brand-500 outline-none">
+        </div>
+
+        <div class="flex gap-3">
+           <button onclick="cancelSettlementConfirm()" class="flex-1 h-12 bg-neutralSlate-100 dark:bg-neutralSlate-800 text-neutralSlate-700 dark:text-neutralSlate-300 font-bold rounded-xl text-xs transition active:scale-95">No, Failed</button>
+           <button onclick="finalizeSmartSettlement()" class="flex-1 h-12 bg-brand-500 text-white font-black rounded-xl text-xs shadow-floating transition active:scale-95">Yes, Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settlement History Modal -->
+    <div id="settlementHistoryModal" class="hidden absolute inset-0 z-[65] flex flex-col justify-end no-print">
+      <div class="modal-overlay" onclick="closeSettlementHistory()"></div>
+      <div class="modal-content bg-white dark:bg-neutralSlate-900 p-5 pb-8 h-[85%] flex flex-col animate-slide-up">
+        <div class="w-10 h-1 bg-neutralSlate-200 dark:bg-neutralSlate-800 rounded-full mx-auto mb-5 shrink-0"></div>
+        <div class="flex justify-between items-center mb-4 shrink-0">
+           <h3 class="text-lg font-black flex items-center gap-2"><i data-lucide="history" class="w-5 h-5 text-brand-500"></i> History</h3>
+           <button type="button" onclick="closeSettlementHistory()"><i data-lucide="x" class="w-5 h-5 text-neutralSlate-400"></i></button>
+        </div>
+        <div id="settlementHistoryContainer" class="flex-1 overflow-y-auto space-y-3 no-scrollbar pb-10">
+           <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+
     <!-- Settings Modal -->
     <div id="settingsModal" class="hidden absolute inset-0 z-[60] flex flex-col justify-end no-print">
       <div class="modal-overlay" onclick="closeSettingsModal()"></div>
@@ -591,6 +689,8 @@
             <div id="sectionBrand" class="hidden p-3 border-t border-neutralSlate-200 dark:border-white/5 space-y-2 dark:bg-[#13111C]">
               <input type="text" id="customAppNameInput" oninput="updateBrandSettings()" class="w-full h-10 bg-white dark:bg-[#1a1825] rounded-lg px-3 text-xs border border-neutralSlate-200 dark:border-white/5 focus:ring-1 focus:ring-brand-500" placeholder="App Title">
               <input type="text" id="customAppLogoInput" oninput="updateBrandSettings()" class="w-full h-10 bg-white dark:bg-[#1a1825] rounded-lg px-3 text-xs border border-neutralSlate-200 dark:border-white/5 focus:ring-1 focus:ring-brand-500" placeholder="Logo">
+              <!-- ADDED: My UPI ID -->
+              <input type="text" id="customMyUpiInput" oninput="updateBrandSettings()" class="w-full h-10 bg-white dark:bg-[#1a1825] rounded-lg px-3 text-xs border border-neutralSlate-200 dark:border-white/5 focus:ring-1 focus:ring-brand-500" placeholder="My UPI ID (e.g. name@upi)">
             </div>
           </div>
 
@@ -602,9 +702,8 @@
             </div>
           </div>
 
-          <!-- Cloud Sync Section -->
           <div class="border border-neutralSlate-200 dark:border-white/5 rounded-xl bg-neutralSlate-50 dark:bg-[#1a1825] overflow-hidden">
-            <button onclick="toggleSettingsSection('sectionCloudSync')" class="w-full p-3.5 flex justify-between items-center font-bold text-xs"><span class="flex items-center gap-2"><i data-lucide="cloud" class="w-4 h-4 text-brand-500"></i> Sync</span><div class="flex gap-2"><span id="cloudSyncModalStatus" class="bg-neutralSlate-500/20 text-neutralSlate-500 px-1.5 py-0.5 rounded text-[8px] font-black">LOCAL</span><i data-lucide="chevron-down" id="arrow-sectionCloudSync" class="w-3.5 h-3.5 transition-transform"></i></div></button>
+            <button onclick="toggleSettingsSection('sectionCloudSync')" class="w-full p-3.5 flex justify-between items-center font-bold text-xs"><span class="flex items-center gap-2"><i data-lucide="cloud" class="w-4 h-4 text-brand-500"></i> Sync</span><div class="flex gap-2"><span id="cloudSyncModalStatus" class="bg-emerald-500/20 text-emerald-500 px-1.5 py-0.5 rounded text-[8px] font-black">LOCAL</span><i data-lucide="chevron-down" id="arrow-sectionCloudSync" class="w-3.5 h-3.5 transition-transform"></i></div></button>
             <div id="sectionCloudSync" class="hidden p-3 border-t border-neutralSlate-200 dark:border-white/5 space-y-3 dark:bg-[#13111C]">
               <div class="flex justify-between items-center bg-white dark:bg-[#1a1825] p-2 rounded-lg border border-neutralSlate-200 dark:border-white/5"><span class="text-xs font-bold">Auto-Sync</span><input type="checkbox" id="autoSyncToggle" onchange="toggleAutoSync(this.checked)" class="w-4 h-4 accent-brand-500"></div>
               <div><div class="flex justify-between text-[9px] font-bold text-brand-500 uppercase mb-1"><span>App Script URL</span><button onclick="clearCloudUrl()" class="text-danger">Clear</button></div><input type="url" id="gasUrlInput" oninput="updateCloudUrl(this.value)" class="w-full h-10 bg-white dark:bg-[#1a1825] rounded-lg px-3 text-xs border border-neutralSlate-200 dark:border-white/5" placeholder="Paste script URL..."></div>
@@ -642,7 +741,7 @@
 
   <div id="pwaNotificationContainer" class="fixed top-4 left-0 right-0 z-[1000] flex flex-col items-center pointer-events-none gap-2"></div>
 
-  <!-- JAVASCRIPT: Full Integration -->
+  <!-- JAVASCRIPT: Full Integration without Placeholders -->
   <script>
     // Constants & State
     const CATEGORIES = [
@@ -662,7 +761,7 @@
       { id: "Misc", name: "Other 📌", bgClass: "bg-neutralSlate-500/10 text-neutralSlate-600 dark:text-neutralSlate-404" }
     ];
 
-    let appState = { trips: [], activeTripId: "", currency: "₹", theme: "light", appName: "TripExpense", appLogo: "✈️", gasUrl: "", autoSync: false, securityPin: "0000", lastUpdated: 0 };
+    let appState = { trips: [], activeTripId: "", currency: "₹", theme: "light", appName: "TripExpense", appLogo: "✈️", gasUrl: "", autoSync: false, securityPin: "0000", lastUpdated: 0, myUpiId: "" };
     let pieChartInstance = null; let barChartInstance = null; let syncStatusState = "local"; let backgroundPollInterval = null;
     let voiceRecognition = null; let isRecording = false;
 
@@ -722,15 +821,19 @@
       if (savedData) { try { appState = JSON.parse(savedData); } catch (e) { seedInitialSampleData(); } } else { seedInitialSampleData(); }
       if (!appState || !appState.trips) seedInitialSampleData();
       if (!appState.appName) appState.appName = "TripExpense"; if (!appState.appLogo) appState.appLogo = "✈️"; if (!appState.securityPin) appState.securityPin = "0000";
+      if (!appState.myUpiId) appState.myUpiId = "";
       
       // Upgrade DB silently for new features if needed
       appState.trips.forEach(t => { 
         if(!t.deletedExpenses) t.deletedExpenses = [];
         if(!t.tags) t.tags = [];
+        if(t.members) {
+            t.members.forEach(m => { if(m.upiId === undefined) m.upiId = ""; });
+        }
       });
     }
 
-    function seedInitialSampleData() { appState = { trips: [], activeTripId: "", currency: "₹", theme: "light", appName: "TripExpense", appLogo: "✈️", gasUrl: "", autoSync: false, securityPin: "0000", lastUpdated: 0 }; saveStateToLocalStorageDirectly(); }
+    function seedInitialSampleData() { appState = { trips: [], activeTripId: "", currency: "₹", theme: "light", appName: "TripExpense", appLogo: "✈️", gasUrl: "", autoSync: false, securityPin: "0000", lastUpdated: 0, myUpiId: "" }; saveStateToLocalStorageDirectly(); }
     function saveStateToLocalStorageDirectly() { localStorage.setItem('tripexpencetracker_master_v17_premium', JSON.stringify(appState)); }
     function saveStateToLocalStorage() { appState.lastUpdated = Date.now(); saveStateToLocalStorageDirectly(); if (appState.autoSync && appState.gasUrl) triggerSilentCloudSync(); }
 
@@ -766,13 +869,10 @@
         renderApp(); startBackgroundPolling(); 
       } else { errorMsg.classList.remove('hidden'); document.getElementById('loginPinInput').value = ''; document.getElementById('loginPinInput').focus(); }
     }
-    
     function updateAppPin(newPin) { if (newPin && newPin.length === 4) { appState.securityPin = newPin; saveStateToLocalStorage(); } }
     
-    // Feature 24: Biometric Auth Mock (WebAuthn fallback)
     function triggerBiometricAuth() {
         if (window.PublicKeyCredential) {
-            // Mocking for preview. In a real PWA, you'd implement full WebAuthn challenge/response.
             openToastAlert("Fingerprint verified!", "success");
             document.getElementById('loginPinInput').value = appState.securityPin || "0000";
             verifySecurityPin();
@@ -781,14 +881,12 @@
         }
     }
 
-    // Background Sync
     let silentSyncTimer = null;
     function triggerSilentCloudSync() {
       if (!appState.gasUrl) return; updateSyncStatusUI("syncing");
       if (silentSyncTimer) clearTimeout(silentSyncTimer);
       silentSyncTimer = setTimeout(() => { fetch(appState.gasUrl, { method: 'POST', body: JSON.stringify({ action: 'sync', data: appState }) }).then(() => updateSyncStatusUI("synced")).catch(() => updateSyncStatusUI("error")); }, 1200);
     }
-    
     function startBackgroundPolling() {} // Preserved for API compliance, skipping heavy loop in preview
 
     // UI Updates
@@ -799,27 +897,37 @@
     
     function updateSyncStatusUI(status) {
       syncStatusState = status;
-      const modalBadge = document.getElementById('cloudSyncModalStatus');
-      const headerBadge = document.getElementById('syncStatusIndicator');
-
-      let mText = "LOCAL", mClass = "bg-neutralSlate-500/20 text-neutralSlate-500 px-1.5 py-0.5 rounded text-[8px] font-black";
-      let hHtml = `<i data-lucide="hard-drive" class="w-3 h-3 text-neutralSlate-500"></i><span class="text-[9px] font-bold text-neutralSlate-500 hidden sm:inline">Local</span>`;
-
-      if (status === 'syncing') {
-        mText = "SYNCING"; mClass = "bg-warning/20 text-warning px-1.5 py-0.5 rounded text-[8px] font-black animate-pulse";
-        hHtml = `<i data-lucide="refresh-cw" class="w-3 h-3 text-warning animate-spin"></i><span class="text-[9px] font-bold text-warning hidden sm:inline">Syncing</span>`;
-      } else if (status === 'synced') {
-        mText = "LINKED"; mClass = "bg-emerald-500/20 text-emerald-500 px-1.5 py-0.5 rounded text-[8px] font-black";
-        hHtml = `<i data-lucide="cloud-lightning" class="w-3 h-3 text-emerald-500"></i><span class="text-[9px] font-bold text-emerald-500 hidden sm:inline">Linked</span>`;
-      } else if (status === 'error') {
-        mText = "ERROR"; mClass = "bg-danger/20 text-danger px-1.5 py-0.5 rounded text-[8px] font-black";
-        hHtml = `<i data-lucide="cloud-off" class="w-3 h-3 text-danger"></i><span class="text-[9px] font-bold text-danger hidden sm:inline">Error</span>`;
+      const indicator = document.getElementById('syncStatusIndicator');
+      const modalStatus = document.getElementById('cloudSyncModalStatus');
+      if (!indicator || !modalStatus) return;
+      
+      if (!appState.gasUrl) {
+          indicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-neutralSlate-400"></span><span class="text-[9px] font-bold text-neutralSlate-400">Local</span>`;
+          modalStatus.textContent = "LOCAL";
+          modalStatus.className = "bg-neutralSlate-500/20 text-neutralSlate-500 px-1.5 py-0.5 rounded text-[8px] font-black";
+          return;
       }
 
-      if (modalBadge) { modalBadge.textContent = mText; modalBadge.className = mClass; }
-      if (headerBadge) { headerBadge.innerHTML = hHtml; if (window.lucide) lucide.createIcons(); }
+      if (status === "syncing" || status === "pulling") {
+          indicator.innerHTML = `<i data-lucide="refresh-cw" class="w-3 h-3 text-brand-500 animate-spin"></i><span class="text-[9px] font-bold text-brand-500">Syncing</span>`;
+          modalStatus.textContent = "SYNCING...";
+          modalStatus.className = "bg-brand-500/20 text-brand-500 px-1.5 py-0.5 rounded text-[8px] font-black";
+      } else if (status === "synced") {
+          indicator.innerHTML = `<i data-lucide="cloud-lightning" class="w-3 h-3 text-success"></i><span class="text-[9px] font-bold text-success">Linked</span>`;
+          modalStatus.textContent = "LINKED";
+          modalStatus.className = "bg-emerald-500/20 text-emerald-500 px-1.5 py-0.5 rounded text-[8px] font-black";
+      } else if (status === "error") {
+          indicator.innerHTML = `<i data-lucide="cloud-off" class="w-3 h-3 text-danger"></i><span class="text-[9px] font-bold text-danger">Offline</span>`;
+          modalStatus.textContent = "ERROR";
+          modalStatus.className = "bg-rose-500/20 text-rose-500 px-1.5 py-0.5 rounded text-[8px] font-black";
+      } else {
+          indicator.innerHTML = `<i data-lucide="cloud-lightning" class="w-3 h-3 text-success"></i><span class="text-[9px] font-bold text-success">Linked</span>`;
+          modalStatus.textContent = "LINKED";
+          modalStatus.className = "bg-emerald-500/20 text-emerald-500 px-1.5 py-0.5 rounded text-[8px] font-black";
+      }
+      lucide.createIcons();
     }
-    
+
     function switchTab(tabId) {
       hapticTap();
       document.querySelectorAll('.tab-content').forEach(tab => { tab.classList.add('hidden'); tab.classList.remove('block'); });
@@ -828,17 +936,19 @@
     }
     
     function changeCurrency(symbol) { appState.currency = symbol; saveStateToLocalStorage(); document.querySelectorAll('.active-currency').forEach(el => el.textContent = symbol); renderApp(); }
+    
     function toggleDarkMode() {
       const docHtml = document.documentElement;
       if (docHtml.classList.contains('dark')) { docHtml.classList.remove('dark'); docHtml.classList.add('light'); appState.theme = 'light'; } 
       else { docHtml.classList.remove('light'); docHtml.classList.add('dark'); appState.theme = 'dark'; }
       saveStateToLocalStorage(); applyThemeFromState();
     }
+    
     function applyThemeFromState() {
       const docHtml = document.documentElement; const icon = document.getElementById('themeIcon');
       if (appState.theme === 'dark') { docHtml.classList.add('dark'); docHtml.classList.remove('light'); if (icon) icon.setAttribute('data-lucide', 'sun'); } 
       else { docHtml.classList.remove('dark'); docHtml.classList.add('light'); if (icon) icon.setAttribute('data-lucide', 'moon'); }
-      if (window.lucide) lucide.createIcons();
+      lucide.createIcons();
     }
 
     // App Rendering
@@ -855,11 +965,9 @@
 
       document.getElementById('dashboardMainContent').classList.remove('hidden'); document.getElementById('emptyStateOnboarding').classList.add('hidden'); document.getElementById('emptyStateOnboarding').classList.remove('flex');
       
-      // Update Selectors
       const switcher = document.getElementById('headerTripSelector');
       if (switcher) { switcher.innerHTML = ''; appState.trips.forEach(t => { const opt = document.createElement('option'); opt.value = t.id; opt.textContent = t.name; if (t.id === appState.activeTripId) opt.selected = true; switcher.appendChild(opt); }); }
       
-      // Calculate Balances & Stats
       const calc = calculateBalances(activeTrip); const members = activeTrip.members || []; safeSetText('splitBadgeCount', members.length);
       safeSetText('tripName', activeTrip.name); safeSetText('tripDestination', activeTrip.destination);
       const optFormat = { month: 'short', day: 'numeric' }; safeSetText('tripDates', `${new Date(activeTrip.startDate).toLocaleDateString('en-US', optFormat)} - ${new Date(activeTrip.endDate).toLocaleDateString('en-US', optFormat)}`);
@@ -880,11 +988,9 @@
       if (cheapAmt === Infinity) cheapAmt = 0;
       Object.keys(calc.balances).forEach(fId => { const bal = calc.balances[fId]; if (bal > 0.01) oweYou += bal; else if (bal < -0.01) youOwe += Math.abs(bal); });
       
-      // Update DOM Text
       safeSetText('statTotalTripExpense', formatCurrency(total)); safeSetText('statPersonalExpense', formatCurrency(personal)); safeSetText('statFriendsOweYou', formatCurrency(oweYou)); safeSetText('statYouOweFriends', formatCurrency(youOwe)); safeSetText('statSettledAmount', formatCurrency(settled));
       safeSetText('extremeBiggestDesc', bigDesc); safeSetText('extremeBiggestVal', formatCurrency(bigAmt)); safeSetText('extremeCheapestDesc', cheapDesc); safeSetText('extremeCheapestVal', formatCurrency(cheapAmt)); safeSetText('paymentUPIVal', formatCurrency(upi)); safeSetText('paymentCardVal', formatCurrency(card)); safeSetText('paymentCashVal', formatCurrency(cash));
       
-      // Budget Logic & Feature 9: Budget Prediction Insight
       const budgetLimit = parseFloat(activeTrip.budget) || 0; const bCont = document.getElementById('tripHeaderBudgetContainer'); const kCard = document.getElementById('kpiTotalExpenseCard');
       let predictionText = "Analyzing your spending...";
       if (bCont) {
@@ -894,7 +1000,6 @@
           bCont.innerHTML = `<div class="flex justify-between items-center mb-1"><span>Budget</span><span class="font-bold">${rem >= 0 ? formatCurrency(rem) + ' left' : 'Exceeded by ' + formatCurrency(Math.abs(rem))}</span></div><div class="h-1.5 w-full bg-white/20 rounded-full overflow-hidden"><div class="h-full ${bc} rounded-full" style="width: ${pct}%"></div></div>`;
           if (kCard) { if (isExc) kCard.classList.add('border-rose-500'); else kCard.classList.remove('border-rose-500'); }
           
-          // Feature 22: Smart Insights Calculation
           const tripStart = new Date(activeTrip.startDate); const tripEnd = new Date(activeTrip.endDate); const today = new Date();
           const totalDays = Math.max(1, Math.ceil((tripEnd - tripStart) / (1000 * 60 * 60 * 24)));
           const daysPassed = Math.max(1, Math.ceil((Math.min(today, tripEnd) - tripStart) / (1000 * 60 * 60 * 24)));
@@ -908,13 +1013,12 @@
       }
       safeSetText('insightText', predictionText);
 
-      // Render Sub-sections
       populateTagsFilter(activeTrip);
       renderExpensesList(filterAndSortExpenses(activeTrip.expenses), members); 
       renderTimeline(activeTrip); 
       renderSplitsSystem(activeTrip, calc);
-      if (window.lucide) lucide.createIcons();
-      setTimeout(attachRipples, 100); // Attach ripples to newly generated dynamic DOM
+      lucide.createIcons();
+      setTimeout(attachRipples, 100); 
     }
 
     function calculateBalances(trip) {
@@ -922,16 +1026,22 @@
       members.forEach(m => { balances[m.id] = 0; paidForThem[m.id] = 0; paidForMe[m.id] = 0; });
       (trip.expenses || []).forEach(exp => {
         const type = exp.type || 'personal'; const fid = exp.friendId; const amt = parseFloat(exp.amount) || 0;
-        if (type === 'i_paid_friend' && fid && balances[fid] !== undefined) { paidForThem[fid] += amt; if (!trip.expenses.some(e => e.type === 'settlement' && e.settledExpenseId === exp.id)) balances[fid] += amt; } 
-        else if (type === 'friend_paid_me' && fid && balances[fid] !== undefined) { paidForMe[fid] += amt; if (!trip.expenses.some(e => e.type === 'settlement' && e.settledExpenseId === exp.id)) balances[fid] -= amt; } 
-        else if (type === 'settlement' && fid && balances[fid] !== undefined && !exp.settledExpenseId) { if ((exp.settlementDirection || 'you_to_friend') === 'you_to_friend') balances[fid] += amt; else balances[fid] -= amt; }
+        
+        // Smart Partial Settlement Logic: We add and subtract all valid transactions.
+        if (fid && balances[fid] !== undefined) {
+           if (type === 'i_paid_friend') { paidForThem[fid] += amt; balances[fid] += amt; } 
+           else if (type === 'friend_paid_me') { paidForMe[fid] += amt; balances[fid] -= amt; } 
+           else if (type === 'settlement') { 
+               if ((exp.settlementDirection || 'you_to_friend') === 'you_to_friend') balances[fid] += amt; 
+               else balances[fid] -= amt; 
+           }
+        }
       });
       return { balances, paidForThem, paidForMe };
     }
 
     function switchTrip(tripId) { appState.activeTripId = tripId; saveStateToLocalStorage(); renderApp(); }
     
-    // Feature 12 & 16: Tags & Advanced Filters
     function populateTagsFilter(trip) {
       const s = document.getElementById('filterTags'); if(!s) return;
       s.innerHTML = '<option value="ALL">All Tags</option>';
@@ -955,20 +1065,20 @@
     function renderExpensesList(expenses, members) {
       const c = document.getElementById('expensesContainer'); c.innerHTML = '';
       if (expenses.length === 0) { c.innerHTML = `<div class="py-10 text-center text-neutralSlate-400 text-xs">No records found.</div>`; return; }
-      const a = appState.trips.find(t => t.id === appState.activeTripId); const aE = a ? a.expenses : [];
+      
       expenses.forEach(exp => {
         const cat = CATEGORIES.find(x => x.id === exp.category) || { name: exp.category, bgClass: "bg-neutralSlate-100 text-neutralSlate-600" };
         const dStr = new Date(exp.date).toLocaleDateString('en-US', { day: '2-digit', month: 'short' }); const type = exp.type || 'personal'; const comp = members.find(m => m.id === exp.friendId) || { name: 'Friend' };
-        let sT = ''; let qS = ''; const iS = !!aE.find(e => e.type === 'settlement' && e.settledExpenseId === exp.id);
+        let sT = ''; let qS = '';
+        
         if (type === 'personal') sT = `<span class="text-[8px] text-neutralSlate-400 font-bold">Personal</span>`;
-        else if (type === 'i_paid_friend') { sT = `<span class="text-[8px] text-brand-500 font-bold">Paid for ${comp.name}</span>`; if(!iS) qS = `<button onclick="triggerQuickSettle('${exp.friendId}', ${exp.amount}, 'friend_to_you', '${exp.description.replace(/'/g, "\\'")}', '${exp.id}')" class="h-6 px-2 bg-brand-500/10 text-brand-500 rounded text-[9px] font-bold">Settle</button>`; } 
-        else if (type === 'friend_paid_me') { sT = `<span class="text-[8px] text-accent font-bold">${comp.name} paid</span>`; if(!iS) qS = `<button onclick="triggerQuickSettle('${exp.friendId}', ${exp.amount}, 'you_to_friend', '${exp.description.replace(/'/g, "\\'")}', '${exp.id}')" class="h-6 px-2 bg-accent/10 text-accent rounded text-[9px] font-bold">Settle</button>`; }
-        if (iS) sT += `<span class="text-success font-bold text-[8px] ml-1">✓ Settled</span>`;
+        else if (type === 'i_paid_friend') { sT = `<span class="text-[8px] text-brand-500 font-bold">Paid for ${comp.name}</span>`; } 
+        else if (type === 'friend_paid_me') { sT = `<span class="text-[8px] text-accent font-bold">${comp.name} paid</span>`; }
+        
         let iC = 'receipt'; if (exp.category === 'Food' || exp.category === 'Snacks') iC = 'coffee'; if (exp.category === 'Hotel') iC = 'bed'; if (['Train','Bus','Auto','Taxi','Flight'].includes(exp.category)) iC = 'navigation';
 
-        // Check for multiple images or location
         let hasImg = exp.images && exp.images.length > 0;
-        if(!hasImg && exp.billImage) hasImg = true; // backward compatibility
+        if(!hasImg && exp.billImage) hasImg = true; 
         let locHTML = exp.location ? `<a href="https://maps.google.com/?q=${exp.location.lat},${exp.location.lng}" target="_blank" class="text-brand-500"><i data-lucide="map-pin" class="w-3 h-3"></i></a>` : '';
 
         const node = document.createElement('div'); node.className = "bg-white dark:bg-neutralSlate-900 p-3 rounded-[16px] shadow-sm flex flex-col gap-2 transition active:scale-95 border border-neutralSlate-100 dark:border-neutralSlate-800";
@@ -982,13 +1092,15 @@
           </div>
           <div class="flex items-center justify-between pt-1">
              <div class="flex gap-1 overflow-x-auto no-scrollbar"><span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase shrink-0 ${cat.bgClass}">${cat.name}</span><span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase shrink-0 bg-neutralSlate-100 dark:bg-neutralSlate-800 text-neutralSlate-500">${exp.paymentMethod}</span>${(exp.tags||[]).map(t=>`<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase shrink-0 bg-brand-500/10 text-brand-500">#${t}</span>`).join('')}</div>
-             <div class="flex items-center gap-1 shrink-0">${qS}<button onclick="openExpenseEditModal('${exp.id}')" class="w-6 h-6 flex items-center justify-center text-neutralSlate-400"><i data-lucide="edit-2" class="w-3 h-3"></i></button><button onclick="triggerDeleteExpense('${exp.id}')" class="w-6 h-6 flex items-center justify-center text-neutralSlate-400"><i data-lucide="trash-2" class="w-3 h-3"></i></button></div>
+             <div class="flex items-center gap-1 shrink-0">
+                ${exp.type === 'settlement' ? `<button onclick="generateSettlementReceipt('${exp.id}')" class="w-6 h-6 flex items-center justify-center text-success bg-success/10 rounded mr-1"><i data-lucide="download" class="w-3 h-3"></i></button>` : ''}
+                ${qS}<button onclick="openExpenseEditModal('${exp.id}')" class="w-6 h-6 flex items-center justify-center text-neutralSlate-400"><i data-lucide="edit-2" class="w-3 h-3"></i></button><button onclick="triggerDeleteExpense('${exp.id}')" class="w-6 h-6 flex items-center justify-center text-neutralSlate-400"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+             </div>
           </div>
         `; c.appendChild(node);
       });
     }
 
-    // Feature 13: Timeline Render
     function renderTimeline(trip) {
       const c = document.getElementById('timelineContainer'); c.innerHTML = '';
       if(!trip.expenses || trip.expenses.length === 0) { c.innerHTML = '<p class="text-xs text-neutralSlate-400">No activity yet.</p>'; return; }
@@ -1082,7 +1194,6 @@
       document.getElementById('expenseModal').classList.remove('hidden'); 
     }
 
-    // Split System
     function renderSplitsSystem(trip, calc) {
       const cL = document.getElementById('friendsListContainer'); cL.innerHTML = ''; const mbs = trip.members || [];
       if (mbs.length === 0) cL.innerHTML = `<div class="col-span-2 py-4 text-center text-neutralSlate-404 text-xs">No friends added.</div>`;
@@ -1091,8 +1202,17 @@
         if (b > 0.01) bL = `<span class="text-[10px] font-black text-success">Owes you ${formatCurrency(b)}</span>`;
         else if (b < -0.01) bL = `<span class="text-[10px] font-black text-danger">You owe ${formatCurrency(Math.abs(b))}</span>`;
         else bL = `<span class="text-[10px] text-neutralSlate-500 font-bold">Settled up</span>`;
+        
         const card = document.createElement('div'); card.className = "bg-white dark:bg-neutralSlate-900 p-3 rounded-[16px] shadow-sm relative border border-neutralSlate-100 dark:border-neutralSlate-800";
-        card.innerHTML = `<button onclick="deleteFriend('${m.id}')" class="absolute top-2 right-2 text-neutralSlate-300 hover:text-rose-500"><i data-lucide="trash-2" class="w-3 h-3"></i></button><div class="w-8 h-8 rounded-xl mb-2 flex items-center justify-center font-black text-xs shadow-inner ${m.color}">${m.name.charAt(0)}</div><h4 class="font-black text-xs truncate">${m.name}</h4><div class="mt-0.5">${bL}</div>`; cL.appendChild(card);
+        card.innerHTML = `
+           <div class="absolute top-2 right-2 flex gap-1">
+               <button onclick="openSettlementHistory('${m.id}')" class="text-brand-500 hover:text-brand-600 p-1"><i data-lucide="history" class="w-3 h-3"></i></button>
+               <button onclick="openFriendEditModal('${m.id}')" class="text-neutralSlate-300 hover:text-brand-500 p-1"><i data-lucide="edit-2" class="w-3 h-3"></i></button>
+               <button onclick="deleteFriend('${m.id}')" class="text-neutralSlate-300 hover:text-rose-500 p-1"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+           </div>
+           <div class="w-8 h-8 rounded-xl mb-2 flex items-center justify-center font-black text-xs shadow-inner ${m.color}">${m.name.charAt(0)}</div>
+           <h4 class="font-black text-xs truncate">${m.name}</h4><div class="mt-0.5">${bL}</div>
+        `; cL.appendChild(card);
       }); }
 
       const tB = document.getElementById('splitBalanceTableBody'); tB.innerHTML = '';
@@ -1100,19 +1220,19 @@
         const yp = calc.paidForThem[m.id] || 0; const tp = calc.paidForMe[m.id] || 0; const nb = calc.balances[m.id] || 0;
         let sC = "text-neutralSlate-555 font-bold"; let sT = "Settled";
         if (nb > 0.01) { sC = "text-success font-black"; sT = `Owes`; } else if (nb < -0.01) { sC = "text-danger font-black"; sT = `Owe`; }
-        const tr = document.createElement('tr'); tr.className = "hover:bg-neutralSlate-50/40 dark:hover:bg-neutralSlate-850/25";
-        tr.innerHTML = `<td class="py-2 px-4 font-bold">${m.name}</td><td class="py-2 px-4 text-right">${formatCurrency(yp)}</td><td class="py-2 px-4 text-right">${formatCurrency(tp)}</td><td class="py-2 px-4 text-right ${sC}">${sT}: ${formatCurrency(Math.abs(nb))}</td>`; tB.appendChild(tr);
+        const tr = document.createElement('tr'); tr.className = "hover:bg-neutralSlate-50/40 dark:hover:bg-neutralSlate-850/25 cursor-pointer";
+        tr.setAttribute('onclick', `openSettlementHistory('${m.id}')`);
+        tr.innerHTML = `<td class="py-2 px-4 font-bold flex items-center gap-1">${m.name}</td><td class="py-2 px-4 text-right">${formatCurrency(yp)}</td><td class="py-2 px-4 text-right">${formatCurrency(tp)}</td><td class="py-2 px-4 text-right ${sC}">${sT}: ${formatCurrency(Math.abs(nb))}</td>`; tB.appendChild(tr);
       });
 
       const sC = document.getElementById('settleSuggestionsContainer'); sC.innerHTML = ''; let aC = 0;
       mbs.forEach(m => {
         const b = calc.balances[m.id] || 0; if (Math.abs(b) > 0.01) { aC++; const item = document.createElement('div'); item.className = "p-2.5 bg-neutralSlate-50 dark:bg-neutralSlate-955 rounded-xl flex justify-between items-center gap-2 border border-neutralSlate-100 dark:border-neutralSlate-800";
-        item.innerHTML = `<div><p class="text-[9px] text-neutralSlate-500">${b > 0 ? `<strong>${m.name}</strong> pays You` : `You pay <strong>${m.name}</strong>`}</p><p class="text-xs font-black text-brand-500">${formatCurrency(Math.abs(b))}</p></div><button onclick="triggerQuickSettle('${m.id}', ${Math.abs(b)}, '${b > 0 ? 'friend_to_you' : 'you_to_friend'}')" class="h-7 px-3 bg-brand-500 text-white text-[9px] font-bold rounded-lg shadow">Settle</button>`; sC.appendChild(item); }
+        item.innerHTML = `<div><p class="text-[9px] text-neutralSlate-500">${b > 0 ? `<strong>${m.name}</strong> pays You` : `You pay <strong>${m.name}</strong>`}</p><p class="text-xs font-black text-brand-500">${formatCurrency(Math.abs(b))}</p></div><button onclick="openSmartSettle('${m.id}')" class="h-7 px-3 bg-brand-500 text-white text-[9px] font-bold rounded-lg shadow flex items-center gap-1"><i data-lucide="zap" class="w-3 h-3"></i> Smart Settle</button>`; sC.appendChild(item); }
       });
       if (aC === 0) sC.innerHTML = `<div class="text-center text-[10px] text-neutralSlate-400 font-bold">All clear!</div>`;
     }
 
-    // Form logic, Type changes, etc
     function handleTypeChange(val) {
       const hS = document.getElementById('expenseModalType'); if (hS && hS.value !== val) hS.value = val;
       const bP = document.getElementById('btnTypePersonal'); const bS = document.getElementById('btnTypeSplit'); const sC = document.getElementById('splitOptionsContainer');
@@ -1128,11 +1248,10 @@
       if (val === 'personal') { fR.classList.add('hidden'); sR.classList.add('hidden'); } else if (val === 'settlement') { fR.classList.remove('hidden'); sR.classList.remove('hidden'); } else { fR.classList.remove('hidden'); sR.classList.add('hidden'); }
     }
     
-    // Feature 7 & 3: Multi-image Processing & OCR setup
     function processBillImages(e) {
       const files = Array.from(e.target.files); if (!files.length) return;
       let totalSize = files.reduce((acc, f) => acc + f.size, 0);
-      if (totalSize > 5 * 1024 * 1024) { openToastAlert("Total max 5MB!"); return; } // Limit for storage sake
+      if (totalSize > 5 * 1024 * 1024) { openToastAlert("Total max 5MB!"); return; } 
       
       const promises = files.map(f => new Promise((resolve) => {
           const r = new FileReader(); r.onload = (evt) => resolve(evt.target.result); r.readAsDataURL(f);
@@ -1145,7 +1264,6 @@
       });
     }
 
-    // Feature 3: OCR Scanner using Tesseract
     async function scanReceiptOCR() {
       const b64Data = document.getElementById('expenseModalBillBase64').value;
       if(!b64Data) return;
@@ -1159,14 +1277,11 @@
         const result = await Tesseract.recognize(images[0], 'eng');
         const text = result.data.text;
         
-        // Basic Regex Extraction
         const amountMatch = text.match(/(?:Rs\.?|INR|₹|\$)\s*(\d+(?:\.\d{1,2})?)/i) || text.match(/Total[:\s]*(\d+(?:\.\d{1,2})?)/i);
         if(amountMatch && amountMatch[1]) document.getElementById('expenseModalAmount').value = parseFloat(amountMatch[1]);
         
-        // Try to extract date
         const dateMatch = text.match(/(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/);
         if(dateMatch && dateMatch[1]) {
-            // Attempt to parse and set
             let d = new Date(dateMatch[1]);
             if(!isNaN(d)) document.getElementById('expenseModalDate').value = d.toISOString().split('T')[0];
         }
@@ -1176,10 +1291,9 @@
         openToastAlert("OCR failed to read clearly.");
       }
       btn.innerHTML = `<i data-lucide="scan" class="w-3.5 h-3.5"></i> OCR Scan`;
-      if (window.lucide) lucide.createIcons();
+      lucide.createIcons();
     }
 
-    // Feature 4: AI Categorizer (Regex keyword match)
     function autoCategorize(desc) {
       if(!desc) return;
       const d = desc.toLowerCase();
@@ -1200,7 +1314,6 @@
       }
     }
 
-    // Feature 5: Voice Entry
     function toggleVoiceInput() {
       if (!('webkitSpeechRecognition' in window)) { openToastAlert("Voice not supported here."); return; }
       if (isRecording) { voiceRecognition.stop(); return; }
@@ -1218,7 +1331,6 @@
         const text = event.results[0][0].transcript;
         document.getElementById('expenseModalDescription').value = text;
         
-        // Simple NLP extraction
         const amtMatch = text.match(/(\d+)/);
         if(amtMatch) document.getElementById('expenseModalAmount').value = amtMatch[1];
         autoCategorize(text);
@@ -1232,7 +1344,6 @@
       voiceRecognition.start();
     }
 
-    // Feature 6: Maps integration
     function attachGPSLocation() {
         if (!navigator.geolocation) { openToastAlert("GPS not supported."); return; }
         navigator.geolocation.getCurrentPosition((pos) => {
@@ -1242,7 +1353,6 @@
         }, () => { openToastAlert("Failed to get location."); });
     }
 
-    // Expense Save & Update
     function saveExpense(e) {
       e.preventDefault(); const sb = document.getElementById('expenseSubmitBtn'); if (sb) sb.disabled = true; const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a) { if (sb) sb.disabled = false; return; }
       
@@ -1260,7 +1370,6 @@
       saveStateToLocalStorage(); closeExpenseModal(); renderApp(); checkNotifications();
     }
 
-    // Feature 11: Undo Delete (Recycle Bin)
     function triggerDeleteExpense(id) { 
       const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a) return; 
       showAlertDialog("Delete?", "Move to recycle bin?", () => { 
@@ -1301,7 +1410,6 @@
         a.deletedExpenses = []; saveStateToLocalStorage(); openRecycleBin(); openToastAlert("Bin Cleared.");
     }
 
-    // Feature 1: Professional Multi-page PDF (jsPDF)
     function generatePremiumPDF() {
       const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a || !a.expenses || a.expenses.length===0) return;
       openToastAlert("Generating Professional PDF...");
@@ -1312,8 +1420,7 @@
           const pageWidth = doc.internal.pageSize.width;
           const pageHeight = doc.internal.pageSize.height;
           
-          // Page 1: Cover
-          doc.setFillColor(99, 102, 241); // Brand Color
+          doc.setFillColor(99, 102, 241);
           doc.rect(0, 0, pageWidth, pageHeight, 'F');
           doc.setTextColor(255, 255, 255);
           doc.setFontSize(36); doc.text(a.name, 20, 80);
@@ -1321,7 +1428,6 @@
           doc.text(`Dates: ${a.startDate} to ${a.endDate}`, 20, 110);
           doc.setFontSize(12); doc.text(`Generated: ${new Date().toLocaleDateString()}`, 20, pageHeight - 20);
           
-          // Page 2: Table
           doc.addPage();
           doc.setTextColor(0, 0, 0);
           doc.setFontSize(18); doc.text("Expense Ledger", 14, 20);
@@ -1349,7 +1455,6 @@
       }, 500);
     }
 
-    // Feature 2: Excel Export
     function generateExcelReport() {
         const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a || !a.expenses || a.expenses.length===0) return;
         openToastAlert("Generating Excel...");
@@ -1357,16 +1462,13 @@
         setTimeout(() => {
             const wb = XLSX.utils.book_new();
             
-            // Sheet 1: Summary Info
             const ws_info = XLSX.utils.json_to_sheet([{ Trip: a.name, Destination: a.destination, Start: a.startDate, End: a.endDate, Budget: a.budget }]);
             XLSX.utils.book_append_sheet(wb, ws_info, "Trip Info");
             
-            // Sheet 2: Expenses
             const cleanExp = a.expenses.map(e => ({ Date: e.date, Category: e.category, Description: e.description, Amount: e.amount, Method: e.paymentMethod, Type: e.type }));
             const ws_data = XLSX.utils.json_to_sheet(cleanExp);
             XLSX.utils.book_append_sheet(wb, ws_data, "Expenses");
             
-            // Sheet 3: Friends (Ledger via calc)
             const calc = calculateBalances(a);
             const fd = (a.members || []).map(m => ({ Name: m.name, NetBalance: calc.balances[m.id] }));
             const ws_friends = XLSX.utils.json_to_sheet(fd);
@@ -1376,7 +1478,6 @@
         }, 500);
     }
 
-    // Feature 19: QR Code Generation
     function generateTripQR() {
         const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a) return;
         document.getElementById('qrModal').classList.remove('hidden');
@@ -1384,7 +1485,6 @@
         qrContainer.innerHTML = `<div class="w-full h-[200px] flex items-center justify-center text-brand-500"><i data-lucide="loader" class="w-8 h-8 animate-spin"></i></div>`;
         if (window.lucide) lucide.createIcons();
         
-        // Encode a lightweight JSON summary to share
         const shareData = JSON.stringify({ id: a.id, n: a.name, d: a.destination, b: a.budget });
         
         if (navigator.onLine) {
@@ -1415,7 +1515,6 @@
     
     function closeQRModal() { document.getElementById('qrModal').classList.add('hidden'); }
 
-    // Feature 10: Notification System
     function checkNotifications() {
         const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a) return;
         let notifs = 0;
@@ -1438,7 +1537,6 @@
         showAlertDialog("Notifications", msg, () => {}, false);
     }
     
-    // Feature 8: Advanced Analytics Charting
     function initCharts() {
       const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a) return;
       const isDark = document.documentElement.classList.contains('dark'); const tc = isDark ? '#f8fafc' : '#0f172a'; const bc = isDark ? '#1e293b' : '#e2e8f0';
@@ -1468,7 +1566,6 @@
       else barChartInstance = new Chart(bCtx, { type: 'bar', data: { labels: bL, datasets: [{ data: bV, backgroundColor: '#6366f1', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: tc, font: { size: 9 } } }, y: { grid: { color: bc }, ticks: { color: tc, font: { size: 9 } } } } } });
     }
 
-    // Utilities that were retained
     function previewBillImage(id) { 
         const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a) return; 
         const e = a.expenses.find(x => x.id === id); if (!e) return; 
@@ -1479,22 +1576,49 @@
         else openToastAlert("Allow popups for photo preview"); 
     }
 
-    // Modal Support
-    function showAlertDialog(t, m, c, s=true) { const a = document.getElementById('alertDialog'); document.getElementById('alertTitle').textContent = t; document.getElementById('alertMessage').innerHTML = m.replace(/\n/g, '<br>'); const cB = document.getElementById('alertConfirmBtn'); const aB = document.getElementById('alertCancelBtn'); aB.textContent = "Cancel"; if (s) { cB.classList.remove('hidden'); cB.onclick = function() { c(); closeAlertDialog(); } } else { cB.classList.add('hidden'); aB.textContent = "OK"; } a.classList.remove('hidden'); if(window.lucide) lucide.createIcons(); }
+    function showAlertDialog(t, m, c, s=true) { const a = document.getElementById('alertDialog'); document.getElementById('alertTitle').textContent = t; document.getElementById('alertMessage').innerHTML = m.replace(/\n/g, '<br>'); const cB = document.getElementById('alertConfirmBtn'); const aB = document.getElementById('alertCancelBtn'); aB.textContent = "Cancel"; if (s) { cB.classList.remove('hidden'); cB.onclick = function() { c(); closeAlertDialog(); } } else { cB.classList.add('hidden'); aB.textContent = "OK"; } a.classList.remove('hidden'); lucide.createIcons(); }
     function closeAlertDialog() { document.getElementById('alertDialog').classList.add('hidden'); }
     function openToastAlert(msg, type="info") { 
         const bg = type==="success"?"bg-success":"bg-neutralSlate-900";
         const toast = document.createElement('div');
-        toast.className = `fixed top-10 left-1/2 -translate-x-1/2 ${bg} text-white px-4 py-2 rounded-full text-[10px] font-bold shadow-2xl z-[1000] scale-in-anim`;
+        toast.className = `fixed top-10 left-1/2 -translate-x-1/2 ${bg} text-white px-4 py-2 rounded-full text-[10px] font-bold shadow-2xl z-[1000] scale-in-anim whitespace-nowrap`;
         toast.textContent = msg; document.body.appendChild(toast);
         setTimeout(() => { toast.classList.add('opacity-0'); setTimeout(()=>toast.remove(), 300); }, 3000);
     }
     
-    // Core Handlers
-    function openFriendModal() { document.getElementById('friendForm').reset(); selectFriendColor('bg-indigo-500 text-white'); document.getElementById('friendModal').classList.remove('hidden'); }
+    function openFriendModal() { document.getElementById('friendForm').reset(); document.getElementById('friendModalId').value = ""; selectFriendColor('bg-indigo-500'); document.getElementById('friendModal').classList.remove('hidden'); }
+    
+    function openFriendEditModal(id) { 
+        const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a) return; 
+        const f = a.members.find(x => x.id === id); if (!f) return; 
+        document.getElementById('friendModalId').value = f.id;
+        document.getElementById('friendModalName').value = f.name;
+        document.getElementById('friendModalPhone').value = f.phone !== 'No phone' ? f.phone : '';
+        document.getElementById('friendModalUpi').value = f.upiId || '';
+        selectFriendColor(f.color);
+        document.getElementById('friendModal').classList.remove('hidden'); 
+    }
+    
     function closeFriendModal() { document.getElementById('friendModal').classList.add('hidden'); }
     function selectFriendColor(c) { document.querySelectorAll('.friend-color-btn').forEach(b => b.classList.replace('border-indigo-400', 'border-transparent')); const m = Array.from(document.querySelectorAll('.friend-color-btn')).find(b => b.getAttribute('onclick').includes(c)); if (m) { m.classList.add('border-indigo-400'); m.classList.remove('border-transparent'); } document.getElementById('friendModalColor').value = c; }
-    function saveFriend(e) { e.preventDefault(); const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a) return; if (!a.members) a.members = []; a.members.push({ id: generateUniqueId('friend'), name: document.getElementById('friendModalName').value.trim(), phone: document.getElementById('friendModalPhone').value.trim() || 'No phone', color: document.getElementById('friendModalColor').value }); saveStateToLocalStorage(); closeFriendModal(); renderApp(); }
+    
+    function saveFriend(e) { 
+        e.preventDefault(); const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a) return; if (!a.members) a.members = []; 
+        const id = document.getElementById('friendModalId').value;
+        const n = document.getElementById('friendModalName').value.trim();
+        const p = document.getElementById('friendModalPhone').value.trim() || 'No phone';
+        const u = document.getElementById('friendModalUpi').value.trim();
+        const c = document.getElementById('friendModalColor').value;
+        
+        if (id) {
+            const idx = a.members.findIndex(m => m.id === id);
+            if (idx !== -1) { a.members[idx].name = n; a.members[idx].phone = p; a.members[idx].upiId = u; a.members[idx].color = c; }
+        } else {
+            a.members.push({ id: generateUniqueId('friend'), name: n, phone: p, upiId: u, color: c }); 
+        }
+        saveStateToLocalStorage(); closeFriendModal(); renderApp(); 
+    }
+    
     function deleteFriend(id) { const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a) return; showAlertDialog("Remove?", "Logs remain.", () => { a.members = a.members.filter(m => m.id !== id); saveStateToLocalStorage(); renderApp(); }, true); }
     function openTripModal() { document.getElementById('tripModalTitle').textContent = 'New Trip'; document.getElementById('tripModalId').value = ''; document.getElementById('tripForm').reset(); const today = new Date().toISOString().split('T')[0]; document.getElementById('tripModalStartDate').value = today; document.getElementById('tripModalEndDate').value = today; document.getElementById('tripModal').classList.remove('hidden'); }
     function openTripEditModal() { const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a) return; document.getElementById('tripModalTitle').textContent = 'Edit Trip'; document.getElementById('tripModalId').value = a.id; document.getElementById('tripModalName').value = a.name; document.getElementById('tripModalDestination').value = a.destination; document.getElementById('tripModalStartDate').value = a.startDate; document.getElementById('tripModalEndDate').value = a.endDate; document.getElementById('tripModalBudget').value = a.budget; document.getElementById('tripModal').classList.remove('hidden'); }
@@ -1505,67 +1629,350 @@
     function updateCover(theme) { const t = appState.trips.find(x => x.id === appState.activeTripId); if (t) { t.coverImage = theme; saveStateToLocalStorage(); applyTripCoverBackground(theme); } document.getElementById('coverDropdown').classList.add('hidden'); }
     function toggleDropdown(dropdownId) { const dropdown = document.getElementById(dropdownId); if (dropdown) { if (dropdown.classList.contains('hidden')) { dropdown.classList.remove('hidden'); dropdown.classList.add('scale-in-anim'); } else { dropdown.classList.add('hidden'); dropdown.classList.remove('scale-in-anim'); } } }
     function saveTripJournal() { const a = appState.trips.find(t => t.id === appState.activeTripId); if (a) { a.journal = document.getElementById('tripJournal').value; saveStateToLocalStorage(); } }
-    function triggerQuickSettle(fId, amt, dir, desc = "", sId = "") { openExpenseModal(); document.getElementById('expenseModalType').value = 'settlement'; handleTypeChange('settlement'); document.getElementById('expenseModalFriend').value = fId; document.getElementById('expenseModalSettleDirection').value = dir; document.getElementById('expenseModalAmount').value = amt.toFixed(2); document.getElementById('expenseModalDescription').value = desc ? `Settle: ${desc}` : "Settle Balance"; document.getElementById('expenseModalSettledId').value = sId; }
     function shareSplitSummaryWhatsApp() { const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a) return; const c = calculateBalances(a); let t = `*${appState.appName}*: ${a.name} 🗺\n\n*Ledger:*\n`; (a.members || []).forEach(m => { const b = c.balances[m.id] || 0; t += `• _${m.name}_: ${b > 0.01 ? `Owes you: ${formatCurrency(b)} 🟢` : (b < -0.01 ? `You owe them: ${formatCurrency(Math.abs(b))} 🔴` : 'Settled ✅')}\n`; }); window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(t)}`, '_blank'); }
-    
     function openSettingsModal() { document.getElementById('settingsModal').classList.remove('hidden'); }
     function closeSettingsModal() { document.getElementById('settingsModal').classList.add('hidden'); }
-    
     function toggleSettingsSection(sectionId) { const target = document.getElementById(sectionId); const arrow = document.getElementById('arrow-' + sectionId); if (target) { if (target.classList.contains('hidden')) { ['sectionBrand', 'sectionAppearance', 'sectionCloudSync', 'sectionSecurity', 'sectionBackupRestore', 'sectionAbout'].forEach(id => { const el = document.getElementById(id); const ar = document.getElementById('arrow-' + id); if (el) el.classList.add('hidden'); if (ar) ar.style.transform = 'rotate(0deg)'; }); target.classList.remove('hidden'); if (arrow) arrow.style.transform = 'rotate(180deg)'; } else { target.classList.add('hidden'); if (arrow) arrow.style.transform = 'rotate(0deg)'; } } }
-    
-    function updateBrandSettings() { appState.appName = document.getElementById('customAppNameInput').value.trim() || "TripExpense"; appState.appLogo = document.getElementById('customAppLogoInput').value.trim() || "✈️"; saveStateToLocalStorage(); applyBrandSettings(); }
-    
-    function applyBrandSettings() { 
-        safeSetText('headerBrandName', appState.appName); 
-        safeSetText('headerLogoContainer', appState.appLogo); 
-        document.getElementById('customAppNameInput').value = appState.appName; 
-        document.getElementById('customAppLogoInput').value = appState.appLogo; 
-        document.getElementById('gasUrlInput').value = appState.gasUrl || ""; 
-        document.getElementById('autoSyncToggle').checked = appState.autoSync; 
-        document.getElementById('customAppPinInput').value = appState.securityPin || "0000"; 
-        
-        // Properly sync UI depending on if URL is present
-        if (appState.gasUrl) updateSyncStatusUI("synced");
-        else updateSyncStatusUI("local");
-    }
-    
-    function toggleAutoSync(isChecked) { appState.autoSync = isChecked; saveStateToLocalStorage(); if(appState.gasUrl) updateSyncStatusUI("synced"); else updateSyncStatusUI("local"); startBackgroundPolling(); }
-    
-    function updateCloudUrl(val) { 
-        appState.gasUrl = val.trim(); 
-        saveStateToLocalStorage(); 
-        if(appState.gasUrl) updateSyncStatusUI("synced"); 
-        else updateSyncStatusUI("local"); 
-        startBackgroundPolling(); 
-    }
-    
-    function clearCloudUrl() { 
-        appState.gasUrl = ""; 
-        document.getElementById('gasUrlInput').value = ""; 
-        saveStateToLocalStorage(); 
-        updateSyncStatusUI("local"); 
-        if(backgroundPollInterval) clearInterval(backgroundPollInterval); 
-        openToastAlert("URL Cleared."); 
-    }
-    
+    function updateBrandSettings() { appState.appName = document.getElementById('customAppNameInput').value.trim() || "TripExpense"; appState.appLogo = document.getElementById('customAppLogoInput').value.trim() || "✈️"; appState.myUpiId = document.getElementById('customMyUpiInput').value.trim(); saveStateToLocalStorage(); applyBrandSettings(); }
+    function applyBrandSettings() { safeSetText('headerBrandName', appState.appName); safeSetText('headerLogoContainer', appState.appLogo); document.getElementById('customAppNameInput').value = appState.appName; document.getElementById('customAppLogoInput').value = appState.appLogo; document.getElementById('gasUrlInput').value = appState.gasUrl || ""; document.getElementById('autoSyncToggle').checked = appState.autoSync; document.getElementById('customAppPinInput').value = appState.securityPin || "0000"; document.getElementById('customMyUpiInput').value = appState.myUpiId || ""; }
+    function toggleAutoSync(isChecked) { appState.autoSync = isChecked; saveStateToLocalStorage(); updateSyncStatusUI("local"); startBackgroundPolling(); }
+    function updateCloudUrl(val) { appState.gasUrl = val.trim(); saveStateToLocalStorage(); updateSyncStatusUI("local"); startBackgroundPolling(); }
+    function clearCloudUrl() { appState.gasUrl = ""; document.getElementById('gasUrlInput').value = ""; saveStateToLocalStorage(); updateSyncStatusUI("local"); if(backgroundPollInterval) clearInterval(backgroundPollInterval); openToastAlert("URL Cleared."); }
     function pushStateToCloud() { if (!appState.gasUrl) { openToastAlert("Add Script URL first!"); return; } triggerSilentCloudSync(); }
-    
     function pullStateFromCloud() { if (!appState.gasUrl) return; updateSyncStatusUI("pulling"); fetch(appState.gasUrl).then(res => res.json()).then(res => { if (res && res.status === "success" && res.data) { const url = appState.gasUrl; appState = res.data; appState.gasUrl = url; saveStateToLocalStorageDirectly(); loadDataFromStorage(); applyBrandSettings(); renderApp(); updateSyncStatusUI("synced"); openToastAlert("Pulled successfully!"); } else updateSyncStatusUI("error"); }).catch(err => { updateSyncStatusUI("error"); showAlertDialog("Error", "Check URL.", () => {}, false); }); }
-    
     function triggerBackup() { const l = document.createElement('a'); l.setAttribute("href", "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState))); l.setAttribute("download", `backup.json`); document.body.appendChild(l); l.click(); l.remove(); }
     function triggerRestore(e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = function(evt) { try { const d = JSON.parse(evt.target.result); if (d && d.trips) { appState = d; saveStateToLocalStorageDirectly(); applyBrandSettings(); applyThemeFromState(); renderApp(); openToastAlert("Restored!", "success");} } catch(err){} }; r.readAsText(f); }
     function resetAllData() { showAlertDialog("Reset", "Clear everything?", () => { localStorage.removeItem('tripexpencetracker_master_v17_premium'); seedInitialSampleData(); applyBrandSettings(); applyThemeFromState(); renderApp(); }, true); }
-    function registerServiceWorker() {} // Preserved mock
+    function registerServiceWorker() {} 
     
-    // Feature 15: Global Search (Quick implementation via modal overlay)
     function openGlobalSearch() {
         document.getElementById('navSpends').click();
         setTimeout(() => document.getElementById('searchQuery').focus(), 100);
     }
     
-    // Fix dropdown closing on outside click
     window.addEventListener('click', function(e) { const d = document.getElementById('coverDropdown'); if (d && !e.target.closest('#coverDropdown') && !e.target.closest('button[onclick*="coverDropdown"]')) d.classList.add('hidden'); });
+
+    // ==========================================
+    // PREMIUM SMART SETTLEMENT & PARTIAL PAYMENT
+    // ==========================================
+
+    function openSmartSettle(friendId) {
+        const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a) return;
+        const f = a.members.find(x => x.id === friendId); if (!f) return;
+        
+        const calc = calculateBalances(a);
+        const bal = calc.balances[friendId] || 0;
+        
+        if (Math.abs(bal) < 0.01) { openToastAlert("Already fully settled up!"); return; }
+        
+        hapticTap();
+        document.getElementById('smartSettleModal').classList.remove('hidden');
+        document.getElementById('smartSettleTitle').textContent = "Settle Up";
+        document.getElementById('smartSettleDesc').textContent = `With ${f.name}`;
+        
+        const isYouPaying = bal < 0; // You owe them, so you pay
+        const targetUpi = isYouPaying ? f.upiId : appState.myUpiId;
+        const amountPending = Math.abs(bal);
+        
+        document.getElementById('smartSettleFriendId').value = friendId;
+        document.getElementById('smartSettleDirection').value = isYouPaying ? 'you_to_friend' : 'friend_to_you';
+        document.getElementById('smartSettleMaxAmount').value = amountPending;
+        document.getElementById('smartSettleTargetUpi').value = targetUpi || "";
+        
+        const input = document.getElementById('smartSettleAmount');
+        input.value = amountPending.toFixed(2);
+        
+        const warn = document.getElementById('smartSettleWarning');
+        if (!targetUpi) {
+            warn.classList.remove('hidden');
+            warn.querySelector('#smartSettleWarningText').textContent = isYouPaying ? `Friend's UPI ID is missing. Edit profile to add.` : `Your UPI ID is missing. Add in settings.`;
+        } else {
+            warn.classList.add('hidden');
+        }
+
+        renderSmartSettleButtons(isYouPaying, targetUpi);
+        updateSmartSettleProgress();
+    }
+
+    function closeSmartSettleModal() { document.getElementById('smartSettleModal').classList.add('hidden'); }
+    
+    function renderSmartSettleButtons(isYouPaying, hasUpi) {
+        const c = document.getElementById('smartSettleButtons');
+        c.innerHTML = '';
+        
+        if (isYouPaying) {
+            c.innerHTML += `
+               <button onclick="initiateUPIPayment()" class="col-span-2 h-14 bg-brand-500 text-white rounded-xl font-black text-xs shadow-floating flex items-center justify-center gap-2 active:scale-95 transition-transform ${!hasUpi ? 'opacity-50 pointer-events-none' : ''}"><i data-lucide="smartphone" class="w-5 h-5"></i> Pay via UPI App</button>
+               <button onclick="showUPIQR()" class="h-12 bg-neutralSlate-100 dark:bg-neutralSlate-800 text-neutralSlate-900 dark:text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 active:scale-95 transition-transform ${!hasUpi ? 'opacity-50 pointer-events-none' : ''}"><i data-lucide="qr-code" class="w-4 h-4 text-brand-500"></i> Show QR</button>
+               <button onclick="recordSettlementPostUPI(true)" class="h-12 bg-neutralSlate-100 dark:bg-neutralSlate-800 text-neutralSlate-900 dark:text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 active:scale-95 transition-transform"><i data-lucide="banknote" class="w-4 h-4 text-success"></i> Cash / Manual</button>
+            `;
+        } else {
+            c.innerHTML += `
+               <button onclick="shareUPILink()" class="col-span-2 h-14 bg-brand-500 text-white rounded-xl font-black text-xs shadow-floating flex items-center justify-center gap-2 active:scale-95 transition-transform ${!hasUpi ? 'opacity-50 pointer-events-none' : ''}"><i data-lucide="share-2" class="w-5 h-5"></i> Request via Link</button>
+               <button onclick="showUPIQR()" class="h-12 bg-neutralSlate-100 dark:bg-neutralSlate-800 text-neutralSlate-900 dark:text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 active:scale-95 transition-transform ${!hasUpi ? 'opacity-50 pointer-events-none' : ''}"><i data-lucide="qr-code" class="w-4 h-4 text-brand-500"></i> Show QR</button>
+               <button onclick="recordSettlementPostUPI(true)" class="h-12 bg-neutralSlate-100 dark:bg-neutralSlate-800 text-neutralSlate-900 dark:text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 active:scale-95 transition-transform"><i data-lucide="banknote" class="w-4 h-4 text-success"></i> Mark Received</button>
+            `;
+        }
+        lucide.createIcons();
+    }
+
+    function updateSmartSettleProgress() {
+        const max = parseFloat(document.getElementById('smartSettleMaxAmount').value) || 0;
+        const current = parseFloat(document.getElementById('smartSettleAmount').value) || 0;
+        const safeCurrent = Math.min(Math.max(current, 0), max); // clamp
+        
+        let pct = 0;
+        if (max > 0) pct = (safeCurrent / max) * 100;
+        
+        document.getElementById('smartSettleProgressBar').style.width = `${pct}%`;
+        document.getElementById('smartSettleProgressPaid').textContent = `Paying: ${formatCurrency(safeCurrent)}`;
+        document.getElementById('smartSettleProgressRem').textContent = `Rem: ${formatCurrency(max - safeCurrent)}`;
+        
+        if (current > max) {
+            document.getElementById('smartSettleAmount').classList.add('text-danger');
+            document.getElementById('smartSettleProgressBar').classList.replace('bg-brand-500', 'bg-danger');
+        } else {
+            document.getElementById('smartSettleAmount').classList.remove('text-danger');
+            document.getElementById('smartSettleProgressBar').classList.replace('bg-danger', 'bg-brand-500');
+        }
+    }
+
+    function getUPIString() {
+        const a = appState.trips.find(t => t.id === appState.activeTripId);
+        const f = a.members.find(x => x.id === document.getElementById('smartSettleFriendId').value);
+        const amt = parseFloat(document.getElementById('smartSettleAmount').value) || 0;
+        const dir = document.getElementById('smartSettleDirection').value;
+        const targetUpi = document.getElementById('smartSettleTargetUpi').value;
+        
+        const rxName = dir === 'you_to_friend' ? f.name : "Me"; 
+        const note = encodeURIComponent(`Trip ${a.name} Settlement`);
+        
+        return `upi://pay?pa=${targetUpi}&pn=${encodeURIComponent(rxName)}&am=${amt}&cu=INR&tn=${note}`;
+    }
+
+    function initiateUPIPayment() {
+        const amt = parseFloat(document.getElementById('smartSettleAmount').value) || 0;
+        const max = parseFloat(document.getElementById('smartSettleMaxAmount').value) || 0;
+        
+        if (amt <= 0 || amt > max) { openToastAlert("Enter a valid amount to settle."); return; }
+        
+        const upiLink = getUPIString();
+        window.location.href = upiLink; 
+        
+        setTimeout(() => {
+            closeSmartSettleModal();
+            document.getElementById('settleConfirmTxnId').value = '';
+            document.getElementById('settleConfirmModal').classList.remove('hidden');
+        }, 1500);
+    }
+
+    function showUPIQR() {
+        const amt = parseFloat(document.getElementById('smartSettleAmount').value) || 0;
+        const max = parseFloat(document.getElementById('smartSettleMaxAmount').value) || 0;
+        if (amt <= 0 || amt > max) { openToastAlert("Enter a valid amount to settle."); return; }
+        
+        const upiLink = getUPIString();
+        const targetUpi = document.getElementById('smartSettleTargetUpi').value;
+        
+        const qrContainer = document.getElementById('upiQrCodeContainer');
+        qrContainer.innerHTML = '';
+        
+        new QRCode(qrContainer, {
+            text: upiLink, width: 220, height: 220, colorDark : "#0f172a", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H
+        });
+
+        document.getElementById('upiQrTargetId').textContent = targetUpi;
+        
+        const dir = document.getElementById('smartSettleDirection').value;
+        const a = appState.trips.find(t => t.id === appState.activeTripId);
+        const f = a.members.find(x => x.id === document.getElementById('smartSettleFriendId').value);
+        document.getElementById('upiQrTargetName').textContent = dir === 'you_to_friend' ? `Paying ${f.name}` : `${f.name} pays You`;
+
+        closeSmartSettleModal();
+        document.getElementById('upiQrModal').classList.remove('hidden');
+    }
+
+    function shareUPILink() {
+        const amt = parseFloat(document.getElementById('smartSettleAmount').value) || 0;
+        const max = parseFloat(document.getElementById('smartSettleMaxAmount').value) || 0;
+        if (amt <= 0 || amt > max) { openToastAlert("Enter a valid amount."); return; }
+        
+        const upiLink = getUPIString();
+        if (navigator.share) {
+            navigator.share({ title: 'Trip Settlement', text: `Please pay ${formatCurrency(amt)} for our trip.`, url: upiLink })
+                     .then(() => openToastAlert("Shared successfully!"))
+                     .catch((e) => copyToClipboard(upiLink));
+        } else {
+            copyToClipboard(upiLink);
+        }
+    }
+
+    function closeUpiQrModal() { document.getElementById('upiQrModal').classList.add('hidden'); }
+    
+    function cancelSettlementConfirm() { document.getElementById('settleConfirmModal').classList.add('hidden'); openToastAlert("Payment verification cancelled."); }
+
+    function recordSettlementPostUPI(isManual = false) {
+        const amt = parseFloat(document.getElementById('smartSettleAmount').value) || 0;
+        const max = parseFloat(document.getElementById('smartSettleMaxAmount').value) || 0;
+        if (amt <= 0 || amt > max) { openToastAlert("Enter a valid amount."); return; }
+        
+        if (isManual) {
+            document.getElementById('settleConfirmTxnId').value = 'Cash / Manual';
+            finalizeSmartSettlement();
+        } else {
+            closeUpiQrModal();
+            document.getElementById('settleConfirmTxnId').value = '';
+            document.getElementById('settleConfirmModal').classList.remove('hidden');
+        }
+    }
+
+    function finalizeSmartSettlement() {
+        const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a) return;
+        
+        const amt = parseFloat(document.getElementById('smartSettleAmount').value) || 0;
+        const fId = document.getElementById('smartSettleFriendId').value;
+        const dir = document.getElementById('smartSettleDirection').value;
+        const txnId = document.getElementById('settleConfirmTxnId').value.trim() || 'UPI Transfer';
+        
+        const expId = generateUniqueId('exp');
+        const o = { 
+            id: expId, 
+            date: new Date().toISOString().split('T')[0], 
+            category: 'Misc', 
+            description: `Settlement (${txnId})`, 
+            amount: amt, 
+            paymentMethod: txnId === 'Cash / Manual' ? 'Cash' : 'UPI', 
+            notes: `Smart Settlement`, 
+            images: [], 
+            location: null, 
+            tags: ['settlement'], 
+            type: 'settlement', 
+            friendId: fId, 
+            settlementDirection: dir, 
+            settledExpenseId: '' 
+        };
+        
+        a.expenses.push(o);
+        saveStateToLocalStorage();
+        
+        document.getElementById('settleConfirmModal').classList.add('hidden');
+        closeSmartSettleModal();
+        renderApp();
+        checkNotifications();
+        
+        if (window.confetti) {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#6366f1', '#10b981', '#f59e0b'] });
+        }
+        openToastAlert("Ledger Updated Successfully! 🎉", "success");
+    }
+
+    function copyToClipboard(text) {
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+            openToastAlert("Copied to clipboard!");
+        }).catch(() => {
+            const temp = document.createElement("input");
+            document.body.appendChild(temp); temp.value = text; temp.select(); document.execCommand("copy"); document.body.removeChild(temp);
+            openToastAlert("Copied!");
+        });
+    }
+
+    // ==========================================
+    // SETTLEMENT HISTORY & RECEIPTS
+    // ==========================================
+    
+    function openSettlementHistory(friendId) {
+        const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a) return;
+        const f = a.members.find(x => x.id === friendId); if (!f) return;
+        
+        const c = document.getElementById('settlementHistoryContainer');
+        c.innerHTML = '';
+        
+        const history = a.expenses.filter(e => e.type === 'settlement' && e.friendId === friendId).sort((x,y) => new Date(y.date) - new Date(x.date));
+        
+        if (history.length === 0) {
+            c.innerHTML = `<div class="text-center py-10 text-neutralSlate-400 text-xs font-bold">No settlements recorded yet.</div>`;
+        } else {
+            history.forEach(exp => {
+                const isSent = exp.settlementDirection === 'you_to_friend';
+                const icon = isSent ? 'arrow-up-right' : 'arrow-down-left';
+                const color = isSent ? 'text-danger bg-danger/10' : 'text-success bg-success/10';
+                
+                c.innerHTML += `
+                    <div class="bg-neutralSlate-50 dark:bg-neutralSlate-850 p-3 rounded-xl border border-neutralSlate-100 dark:border-neutralSlate-800 flex items-center justify-between shadow-sm">
+                       <div class="flex items-center gap-3">
+                           <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${color}"><i data-lucide="${icon}" class="w-4 h-4"></i></div>
+                           <div>
+                              <p class="text-[10px] font-black text-neutralSlate-400 uppercase tracking-widest">${new Date(exp.date).toLocaleDateString('en-US', { month:'short', day:'numeric'})}</p>
+                              <p class="text-xs font-bold truncate max-w-[120px]">${exp.description}</p>
+                           </div>
+                       </div>
+                       <div class="text-right">
+                           <p class="font-black text-sm">${formatCurrency(exp.amount)}</p>
+                           <button onclick="generateSettlementReceipt('${exp.id}')" class="text-[9px] font-bold text-brand-500 mt-0.5 flex items-center justify-end gap-1 w-full"><i data-lucide="download" class="w-3 h-3"></i> Receipt</button>
+                       </div>
+                    </div>
+                `;
+            });
+        }
+        
+        document.getElementById('settlementHistoryModal').classList.remove('hidden');
+        lucide.createIcons();
+    }
+
+    function closeSettlementHistory() { document.getElementById('settlementHistoryModal').classList.add('hidden'); }
+
+    function generateSettlementReceipt(expId) {
+        const a = appState.trips.find(t => t.id === appState.activeTripId); if (!a) return;
+        const exp = a.expenses.find(e => e.id === expId); if (!exp) return;
+        const f = a.members.find(x => x.id === exp.friendId); if (!f) return;
+        
+        openToastAlert("Generating Receipt PDF...");
+        
+        setTimeout(() => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: [100, 150] });
+            
+            doc.setFillColor(99, 102, 241);
+            doc.rect(0, 0, 100, 20, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text("SETTLEMENT RECEIPT", 50, 12, { align: "center" });
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(9);
+            doc.setFont("helvetica", "normal");
+            
+            doc.text(`App: ${appState.appName}`, 10, 30);
+            doc.text(`Trip: ${a.name}`, 10, 35);
+            doc.text(`Date: ${exp.date}`, 10, 45);
+            doc.text(`Txn ID: ${exp.description.replace('Settlement (', '').replace(')', '')}`, 10, 50);
+            
+            doc.setDrawColor(200, 200, 200);
+            doc.line(10, 55, 90, 55);
+            
+            doc.setFont("helvetica", "bold");
+            const isSent = exp.settlementDirection === 'you_to_friend';
+            doc.text(`From: ${isSent ? 'You' : f.name}`, 10, 65);
+            doc.text(`To: ${isSent ? f.name : 'You'}`, 10, 70);
+            doc.text(`Method: ${exp.paymentMethod}`, 10, 75);
+            
+            doc.line(10, 85, 90, 85);
+            
+            doc.setFontSize(16);
+            doc.text(`Amount: ${appState.currency}${exp.amount}`, 50, 100, { align: "center" });
+            
+            doc.setFontSize(8);
+            doc.setFont("helvetica", "normal");
+            doc.setTextColor(100, 100, 100);
+            doc.text("Thank you for using TripExpense Tracker", 50, 135, { align: "center" });
+            doc.text("Status: Verified ✅", 50, 140, { align: "center" });
+            
+            doc.save(`Receipt_${f.name}_${exp.date}.pdf`);
+            openToastAlert("Receipt Downloaded!", "success");
+        }, 500);
+    }
   </script>
-  <script>if(window.lucide) lucide.createIcons();</script>
 </body>
 </html>
